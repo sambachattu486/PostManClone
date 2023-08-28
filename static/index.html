@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>REST-Client</title>
+    <!-- <script src="scripts.js"></script> -->
+    <script>
+        function get(){
+ const url = 'http://127.0.0.1:8000/get';
+ const query1 = 'url='+document.getElementById('geturl').value;
+// const query2 = 'param2=value2';
+const queryString = [query1].filter(q => q).join('&');
+fetch(`${url}?${queryString}`, {
+  method: 'GET',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+//   body: JSON.stringify(requestBody)
+})
+  .then(response => response.json())
+  .then(data => {
+    document.getElementById('time').innerHTML = JSON.stringify(data.time);
+    document.getElementById('code').innerHTML = JSON.stringify(data.status_code);
+    document.getElementById('size').innerHTML = JSON.stringify(data.size);
+    document.getElementById('headers').innerHTML = `<pre>${JSON.stringify(data.headers,null,2)}</pre>`
+    document.getElementById('body').innerHTML = `<pre>${JSON.stringify(data.body,null,2)}</pre>`
+    const len = Object.keys(data.headers).length
+    document.getElementById('len').innerHTML=JSON.stringify(len)
+  })
+  .catch(error => console.error(error));
+}
+
+function post(){
+  const url = 'http://127.0.0.1:8000';
+  const queryParams = new URLSearchParams({
+  url: document.getElementById('posturl').value,
+  request_body: document.getElementById('post_req_body').value
+  });
+
+  fetch(`${url}/post?${queryParams}`, {
+    method: 'POST'
+  })
+  .then(response => response.json())
+  .then(data => {
+  document.getElementById('time').innerHTML=JSON.stringify(data.time)
+  document.getElementById('code').innerHTML = JSON.stringify(data.status_code);
+  document.getElementById('size').innerHTML = JSON.stringify(data.size);
+  document.getElementById('headers').innerHTML = `<pre>${JSON.stringify(data.headers,null,1)}<pre>`;
+  document.getElementById('body').innerHTML = `<pre>${JSON.stringify(data.body,null,1)}</pre>`;
+  const len = Object.keys(data.headers).length
+  document.getElementById('len').innerHTML=JSON.stringify(len)
+  })
+  .catch(error => console.error(error))
+}
+
+function put(){
+  const url = 'http://127.0.0.1:8000';
+  const queryParams = new URLSearchParams({
+  url: document.getElementById('puturl').value,
+  body: document.getElementById('put_req_body').value
+  });
+
+  fetch(`${url}/put?${queryParams}`, {
+    method: 'PUT'
+  })
+  .then(response => response.json())
+  .then(data => {
+  document.getElementById('time').innerHTML=JSON.stringify(data.time);
+  document.getElementById('code').innerHTML = JSON.stringify(data.status_code);
+  document.getElementById('size').innerHTML = JSON.stringify(data.size);
+  document.getElementById('headers').innerHTML = `<pre>${JSON.stringify(data.headers)}</pre>`;
+  document.getElementById('body').innerHTML = `<pre>${JSON.stringify(data.body)}</pre>`;
+  const len = Object.keys(data.headers).length;
+  document.getElementById('len').innerHTML=JSON.stringify(len);
+  })
+  .catch(error => console.error(error))
+}
+
+function del(){
+    const url = 'http://127.0.0.1:8000';
+    const queryParams = new URLSearchParams({
+    url: document.getElementById('deleteurl').value,
+    });
+    fetch(`${url}/delete?${queryParams}`, {
+      method: 'DELETE'
+    })
+    .then(response => response.json())
+    .then(data => {
+    document.getElementById('time').innerHTML=JSON.stringify(data.time)
+    document.getElementById('code').innerHTML = JSON.stringify(data.status_code);
+    document.getElementById('size').innerHTML = JSON.stringify(data.size);
+    document.getElementById('headers').innerHTML = `<pre>${JSON.stringify(data.headers)}</pre>`;
+    document.getElementById('body').innerHTML = `<pre>${JSON.stringify(data.body)}</pre>`;
+    const len = Object.keys(data.headers).length;
+    document.getElementById('len').innerHTML=JSON.stringify(len);
+    })
+    .catch(error => console.error(error))
+}
+
+    </script>
+    <!-- <link rel="stylesheet" href="styles.css"> -->
+    <style>
+    .main-container{
+    display: flex;
+    }
+    .request{
+    width: 50%;
+    /* overflow: scroll; */
+    height: 900px;
+    margin-right:10px;
+    background-color: rgb(175, 221, 240);
+    border-radius: 10px;
+    padding: 8px;
+    }
+    .response{
+    border-radius: 10px;
+    padding: 8px;
+    width: 50%;
+    height: 900px;
+    /* overflow: scroll; */
+    background-color: rgb(175, 221, 240);
+    }
+    .body{
+        height: 500px;
+    }
+    textarea {
+    width: 100%;
+    height: 150px;
+    padding: 12px 20px;
+    box-sizing: border-box;
+    border: 2px solid #ccc;
+    border-radius: 4px;
+    background-color: #f8f8f8;
+    resize: none;
+    }
+    input[type=text], select, textarea{
+    width: 50%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    resize: vertical;
+    }
+    button{
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    resize: vertical;
+    } 
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <div class="request" id="request">
+            <h3>GET</h3>
+            <input type="text" id="geturl" size="60" placeholder="Enter URL.."> <button type="button" onclick="get()">GET</button>
+            <br><br>
+            <hr>
+            
+            <h3>POST</h3>
+            <input type="text" name="posturl" id="posturl" size="60" placeholder="Enter URL.."> <button type="text" onclick="post()">POST</button><br>
+            <br><textarea id="post_req_body" rows="10" cols="50" placeholder="Request body.."></textarea>
+            <br><br>
+            <hr>
+            
+            <h3>PUT</h3>
+            <input type="text" id="puturl" name="puturl" size="60" placeholder="Enter URL.."> <button type="text" onclick="put()">PUT</button><br>
+            <br> <textarea id="put_req_body" rows="10" cols="50" placeholder="Request body.."></textarea>
+            <br><br>
+            <hr>
+            <br>
+            <h3>DELETE</h3>
+            <input type="text" id="deleteurl" name="deleteurl" size="60" placeholder="Enter URL.."> <button type="text" onclick="del()">DELETE</button><br>
+            <br><br>
+        </div>
+        <div class="response" id ="response">
+            <b>Time :</b><span id="time"></span> ms <br><br>
+            <b>Status code :</b> <span id="code"></span><br><br>
+            <b>Size :</b><span id="size"></span> kb<br><br>
+            <b>Headers(<span id="len"></span>):</b><div id="headers" style="height: 200px;overflow: scroll;border-width: 1; border-style: solid; padding: 10px;border-radius: 6px;"></div>
+            <b>Body :</b> <div id="body" style="height: 500px;overflow: scroll;border-width: 1; border-style: solid; padding: 10px;border-radius: 6px;"></div>
+        </div>
+    </div>
+</body>
+</html>
